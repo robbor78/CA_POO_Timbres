@@ -19,7 +19,11 @@ private:
 public:
   Timbre(string nom, unsigned int annee, string pays="Suisse", double valeur_faciale=1.0) :nom(nom), annee(annee), pays(pays), valeur_faciale(valeur_faciale) {}
 
-  double vente() const {return valeur_faciale;}
+  virtual double vente() const {
+    double f = age()<5? 1.0 : (2.5 * age());
+    return f*valeur_faciale;
+  }
+
   unsigned int age() const {return ANNEE_COURANTE - annee;}
 
   string getNom() const {return nom;}
@@ -27,10 +31,9 @@ public:
   string getPays() const {return pays;}
   double getValeurFaciale() const {return valeur_faciale;}
 
+  virtual string getType() const {return "Timbre";}
 
-  string getType() const {return "Timbre";}
-
-  ostream& afficher(ostream &out) const {
+  virtual ostream& afficher(ostream &out) const {
     out << "de nom "<<getNom()<<" datant de "<<getAnnee()<<" (provenance "<<getPays()<<") ayant pour valeur faciale "<<getValeurFaciale()<<" francs";
     return out;
   }
@@ -42,29 +45,56 @@ ostream& operator<<(ostream &out, Timbre const &t) {
   return out;
 }
 
+
 class Rare : public Timbre {
 private:
+  static constexpr unsigned int PRIX_BASE_TRES_RARE = 600;
+  static constexpr unsigned int PRIX_BASE_RARE = 400;
+  static constexpr unsigned int PRIX_BASE_PEU_RARE = 50;
+
   unsigned int nbExemplaires;
 public:
   Rare(string nom, unsigned int annee, string pays, double valeur_facial, unsigned int nbExemplaires=100) : Timbre(nom,annee,pays,valeur_facial), nbExemplaires(nbExemplaires) {}
+
+  double vente() const {
+    unsigned int base = nbExemplaires < 100 ? PRIX_BASE_TRES_RARE : nbExemplaires < 1000 ? PRIX_BASE_RARE : PRIX_BASE_PEU_RARE;
+
+    return base * (age() / 10.0);
+  }
 
   unsigned int nb_exemplaires() const {return nbExemplaires;}
   string getType() const {return "Timbre rare";}
 
   ostream& afficher(ostream &out) const {
-    out << "("<< nb_exemplaires() <<")";
+    out << "("<< nb_exemplaires() <<" ex.) ";
     Timbre::afficher(out);
     return out;
   }
 };
 
+// ostream& operator<<(ostream &out, Rare const &t) {
+//   out << t.getType() << " ";
+//   t.afficher(out);
+//   return out;
+// }
+
 class Commemoratif : public Timbre {
 public:
   Commemoratif(string nom, unsigned int annee, string pays, double valeur_facial): Timbre(nom,annee,pays,valeur_facial) {}
 
-   string getType() const {return "Timbre commémoratif";}
+  string getType() const {return "Timbre commémoratif";}
+
+  double vente() const {
+    return Timbre::vente() * 2.0;
+  }
 
 };
+
+// ostream& operator<<(ostream &out, Commemoratif const &t) {
+//   out << t.getType() << " ";
+//   t.afficher(out);
+//   return out;
+// }
 
 /*******************************************
  * Ne rien modifier après cette ligne.
@@ -72,14 +102,14 @@ public:
 int main()
 {
   /* Ordre des arguments :
-  *  nom, année d'émission, pays, valeur faciale, nombre d'exemplaires
-  */
+   *  nom, année d'émission, pays, valeur faciale, nombre d'exemplaires
+   */
   Rare t1( "Guarana-4574", 1960, "Mexique", 0.2, 98 );
   Rare t2( "Yoddle-201"  , 1916, "Suisse" , 0.8,  3 );
 
   /* Ordre des arguments :
-  *  nom, année d'émission, pays, valeur faciale, nombre d'exemplaires
-  */
+   *  nom, année d'émission, pays, valeur faciale, nombre d'exemplaires
+   */
   Commemoratif t3( "700eme-501"  , 2002, "Suisse", 1.5 );
   Timbre       t4( "Setchuan-302", 2004, "Chine" , 0.2 );
 
