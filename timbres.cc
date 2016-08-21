@@ -54,7 +54,7 @@ private:
 
   unsigned int nbExemplaires;
 public:
-  Rare(string nom, unsigned int annee, string pays, double valeur_facial, unsigned int nbExemplaires=100) : Timbre(nom,annee,pays,valeur_facial), nbExemplaires(nbExemplaires) {}
+  Rare(string nom, unsigned int annee, string pays="Suisse", double valeur_facial=1.0, unsigned int nbExemplaires=100) : Timbre(nom,annee,pays,valeur_facial), nbExemplaires(nbExemplaires) {}
 
   double vente() const {
     unsigned int base = nbExemplaires < 100 ? PRIX_BASE_TRES_RARE : nbExemplaires < 1000 ? PRIX_BASE_RARE : PRIX_BASE_PEU_RARE;
@@ -80,7 +80,7 @@ public:
 
 class Commemoratif : public Timbre {
 public:
-  Commemoratif(string nom, unsigned int annee, string pays, double valeur_facial): Timbre(nom,annee,pays,valeur_facial) {}
+  Commemoratif(string nom, unsigned int annee, string pays="Suisse", double valeur_facial=1.0): Timbre(nom,annee,pays,valeur_facial) {}
 
   string getType() const {return "Timbre commémoratif";}
 
@@ -96,20 +96,22 @@ public:
 //   return out;
 // }
 
+
+
 /*******************************************
  * Ne rien modifier après cette ligne.
  *******************************************/
 int main()
 {
   /* Ordre des arguments :
-   *  nom, année d'émission, pays, valeur faciale, nombre d'exemplaires
-   */
+  *  nom, année d'émission, pays, valeur faciale, nombre d'exemplaires
+  */
   Rare t1( "Guarana-4574", 1960, "Mexique", 0.2, 98 );
   Rare t2( "Yoddle-201"  , 1916, "Suisse" , 0.8,  3 );
 
   /* Ordre des arguments :
-   *  nom, année d'émission, pays, valeur faciale, nombre d'exemplaires
-   */
+  *  nom, année d'émission, pays, valeur faciale, nombre d'exemplaires
+  */
   Commemoratif t3( "700eme-501"  , 2002, "Suisse", 1.5 );
   Timbre       t4( "Setchuan-302", 2004, "Chine" , 0.2 );
 
